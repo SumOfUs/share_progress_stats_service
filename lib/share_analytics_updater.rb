@@ -32,13 +32,18 @@ class ShareAnalyticsUpdater
         response = Net::HTTP.post_form(API_URI, { key: API_KEY, id: button.sp_id })
         response_status = response.to_hash["status"].first
 
+        Rails.logger.debug("Fecthing for #{button.sp_id}: #{response_status}")
+
         if response_status != "200 OK"
            raise ::ShareProgressApiError, "ShareProgress web server responded with status #{response_status}."
         end
         body = JSON.parse(response.body)
 
+        Rails.logger.debug("Fecthed for #{button.sp_id}: #{body['success']}")
+
         if body['success']
-          button.update(analytics: body.to_json )
+          updated = button.update(analytics: body.to_json )
+          Rails.logger.debug("Updating record for #{button.sp_id}: #{updated}")
         else
           raise ::ShareProgressApiError, "ShareProgress isn't happy. It says '#{body['message']}'. \n\n We gave it this: Share::Button - #{button.inspect}"
         end
@@ -53,9 +58,10 @@ class ShareAnalyticsUpdater
   end
 
   class EnqueueJobs
-    def self.enqueue(button_id)
+    def self.enqueue(button_id, delay = 1)
       Aws::SQS::Client.new.send_message({
         queue_url:    ENV['SQS_QUEUE_URL'],
+        delay_seconds: delay,
         message_body: {
           type:      'update_share',
           button_id: button_id
@@ -64,8 +70,9 @@ class ShareAnalyticsUpdater
     end
 
     def self.run
-      Share::Button.ids_of_active_buttons.each do |button_id|
-        enqueue(button_id)
+      Share::Button.ids_of_active_buttons.each_with_index do |button_id, index|
+        delay_in_seconds =  (index + 1) * 2
+        enqueue(button_id, delay_in_seconds)
       end
     end
   end
