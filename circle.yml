@@ -1,0 +1,38 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - sudo pip install --upgrade docker-compose==1.2.0
+    - sudo pip install awscli
+    - docker build -t soutech/share_progress_stats_service:$CIRCLE_SHA1 .
+
+test:
+  override:
+    # tests the built image
+    - envsubst '$CIRCLE_SHA1' <circle/docker-compose.yml >tmp && mv tmp circle/docker-compose.yml
+    - cat Dockerrun.aws.json.template | envsubst > Dockerrun.aws.json
+    - annotate-output docker-compose -f circle/docker-compose.yml run web
+
+database:
+  override:
+    - echo "look in circle/specs-and-rake-tasks for database setup for testing environment"
+
+deployment:
+  production:
+  # push to Docker Hub and deploy new version on AWS
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push soutech/share_progress_stats_service
+      # Environment name is not the same as for the Ruby worker because we can't change its type
+      - ./deploy.sh $CIRCLE_SHA1 'share_progress_stats' 'sp-worker-production'
+  staging:
+    branch: containerize
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push soutech/share_progress_stats_service
+      - ./deploy.sh $CIRCLE_SHA1 'share_progress_stats' 'sp-worker-staging'
+

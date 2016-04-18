@@ -15,6 +15,7 @@ gem 'aws-sdk'
 
 group :test do
   gem 'database_cleaner'
+  gem 'timecop'
   gem 'webmock'
   gem 'vcr'
 end

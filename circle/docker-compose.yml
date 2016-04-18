@@ -1,0 +1,12 @@
+processor:
+  image: "soutech/champaign-ak-processor:$CIRCLE_SHA1"
+  links:
+    - db
+  command: /myapp/circle/run-tests
+
+db:
+  image: postgres
+  ports:
+    - "5432"
+  environment:
+    POSTGRES_DB: champaign_test
