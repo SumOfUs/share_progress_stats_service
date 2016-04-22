@@ -41,13 +41,13 @@ class ShareAnalyticsUpdater
           button.update(analytics: body.to_json )
           Rails.logger.debug("Updated record for #{button.sp_id}")
         else
-          button.touch
           Rails.logger.debug("ShareProgress isn't happy. It says '#{body['message']}'. \n\n We gave it this: Share::Button - #{button.inspect}")
         end
       else
         Rails.logger.debug("Not successful for #{button.sp_id}: #{body.inspect}")
-        button.touch
       end
+
+      button.touch
     end
 
     def button
