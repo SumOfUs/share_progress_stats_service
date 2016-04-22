@@ -23,7 +23,7 @@ describe Share::Button do
 
     it 'returns buttons ordered by updated_at for active pages' do
       expect( subject ).to eq(
-        @active_page_buttons.map(&:id).reverse
+        @active_page_buttons.map(&:id)
       )
     end
   end
