@@ -1,5 +1,5 @@
 processor:
-  image: "soutech/champaign-ak-processor:$CIRCLE_SHA1"
+  image: "soutech/share_progress_stats_service:$CIRCLE_SHA1"
   links:
     - db
   command: /myapp/circle/run-tests
