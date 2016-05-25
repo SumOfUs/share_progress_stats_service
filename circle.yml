@@ -14,7 +14,7 @@ test:
     # tests the built image
     - envsubst '$CIRCLE_SHA1' <circle/docker-compose.yml >tmp && mv tmp circle/docker-compose.yml
     - cat Dockerrun.aws.json.template | envsubst > Dockerrun.aws.json
-    - annotate-output docker-compose -f circle/docker-compose.yml run web
+    - annotate-output docker-compose -f circle/docker-compose.yml run processor
 
 database:
   override:
