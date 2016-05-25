@@ -14,6 +14,7 @@ class ShareAnalyticsUpdater
     end
   end
 
+
   class FetchAnalytics
     API_URI = URI.parse('http://run.shareprogress.org/api/v1/buttons/analytics')
     API_KEY = ENV['SHARE_PROGRESS_API_KEY']
@@ -28,34 +29,33 @@ class ShareAnalyticsUpdater
         return
       end
 
-      begin
-        response = Net::HTTP.post_form(API_URI, { key: API_KEY, id: button.sp_id })
-        response_status = response.to_hash["status"].first
+      response = Net::HTTP.post_form(API_URI, { key: API_KEY, id: button.sp_id })
+      response_status = response.to_hash["status"].first
 
-        Rails.logger.debug("Fecthing for #{button.sp_id}: #{response_status}")
-
-        if response_status != "200 OK"
-           raise ::ShareProgressApiError, "ShareProgress web server responded with status #{response_status}."
-        end
+      Rails.logger.debug("Fecthing for #{button.sp_id}: #{response_status}")
+      if response_status == "200 OK"
         body = JSON.parse(response.body)
 
         Rails.logger.debug("Fecthed for #{button.sp_id}: #{body['success']}")
 
         if body['success']
-          updated = button.update(analytics: body.to_json )
-          Rails.logger.debug("Updating record for #{button.sp_id}: #{updated}")
+          button.update(analytics: body.to_json )
+          Rails.logger.debug("Updated record for #{button.sp_id}")
         else
-          raise ::ShareProgressApiError, "ShareProgress isn't happy. It says '#{body['message']}'. \n\n We gave it this: Share::Button - #{button.inspect}"
+          Rails.logger.debug("ShareProgress isn't happy. It says '#{body['message']}'. \n\n We gave it this: Share::Button - #{button.inspect}")
         end
-      rescue => e
-        raise ::ShareProgressApiError, e.message
+      else
+        Rails.logger.debug("Not successful for #{button.sp_id}: #{body.inspect}")
       end
+
+      button.touch
     end
 
     def button
       @button ||= Share::Button.find(@id)
     end
   end
+
 
   class EnqueueJobs
     def self.enqueue(button_id, delay = 1)
