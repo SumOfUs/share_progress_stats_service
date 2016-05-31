@@ -7,7 +7,6 @@ class HandlerController < ActionController::API
   end
 
   def enqueue
-    Rails.logger.debug("I'm in #enqueue with #{Rails.env}")
     ShareAnalyticsUpdater.enqueue_jobs
     head :ok
   end
