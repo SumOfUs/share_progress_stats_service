@@ -14,6 +14,7 @@ class ShareAnalyticsUpdater
     end
   end
 
+
   class FetchAnalytics
     API_URI = URI.parse('http://run.shareprogress.org/api/v1/buttons/analytics')
     API_KEY = ENV['SHARE_PROGRESS_API_KEY']
@@ -54,6 +55,7 @@ class ShareAnalyticsUpdater
       @button ||= Share::Button.find(@id)
     end
   end
+
 
   class EnqueueJobs
     def self.enqueue(button_id, delay = 1)

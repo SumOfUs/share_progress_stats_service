@@ -20,3 +20,11 @@
 # Ignore Byebug command history file.
 .byebug_history
 .elasticbeanstalk/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# IDEA files
+.idea
