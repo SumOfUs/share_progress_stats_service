@@ -8,6 +8,6 @@ class Share::Button < ActiveRecord::Base
       includes(:page).
         order("share_buttons.updated_at asc").
         where_page_is_active.
-        limit(140).ids
+        limit(100).ids
   end
 end
