@@ -2,4 +2,4 @@ version: 1
 cron:
  - name: "enqueue"
    url: "/enqueue"
-   schedule: "*/5 * * * *"
+   schedule: "*/1 * * * *"

@@ -71,7 +71,7 @@ class ShareAnalyticsUpdater
 
     def self.run
       Share::Button.ids_of_active_buttons.each_with_index do |button_id, index|
-        delay_in_seconds =  (index + 2) * 2
+        delay_in_seconds =  (index + 1) * 2
         enqueue(button_id, delay_in_seconds)
       end
     end
