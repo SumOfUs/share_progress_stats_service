@@ -17,7 +17,7 @@ describe ShareAnalyticsUpdater::EnqueueJobs do
   it 'enqueues' do
     expected_arguments = {
       queue_url: 'bar.com',
-      delay_seconds: 4,
+      delay_seconds: 2,
       message_body: {
         type: 'update_share',
         button_id: button.id
