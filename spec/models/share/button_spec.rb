@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe Share::Button do
   describe '.ids_of_active_buttons' do
-    let(:active_page) { Page.create(title: 'foo',   slug: 'slug', active: true) }
-    let(:inactive_page) { Page.create(title: 'foo', slug: 'slug', active: false) }
+    let(:active_page) { Page.create(title: 'foo',   slug: 'slug', publish_status: 0) }
+    let(:inactive_page) { Page.create(title: 'foo', slug: 'slug', publish_status: 1) }
 
     subject { Share::Button.ids_of_active_buttons }
 
