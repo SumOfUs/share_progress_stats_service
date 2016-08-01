@@ -2,7 +2,7 @@ require 'rails_helper'
 require './lib/share_analytics_updater'
 
 describe ShareAnalyticsUpdater::EnqueueJobs do
-  let(:page)    { Page.create(title: 'Foo', slug: 'foo', active: true)}
+  let(:page)    { Page.create(title: 'Foo', slug: 'foo', publish_status: 0)}
   let!(:button) { Share::Button.create(page: page, url: 'foo.com') }
 
   let(:sqs_client) { double }
