@@ -16,7 +16,7 @@ class ShareAnalyticsUpdater
 
 
   class FetchAnalytics
-    API_URI = URI.parse('http://run.shareprogress.org/api/v1/buttons/analytics')
+    API_URI = URI.parse('https://run.shareprogress.org/api/v1/buttons/analytics')
     API_KEY = ENV['SHARE_PROGRESS_API_KEY']
 
     def initialize(id)
@@ -30,10 +30,9 @@ class ShareAnalyticsUpdater
       end
 
       response = Net::HTTP.post_form(API_URI, { key: API_KEY, id: button.sp_id })
-      response_status = response.to_hash["status"].first
 
-      Rails.logger.debug("Fecthing for #{button.sp_id}: #{response_status}")
-      if response_status == "200 OK"
+      Rails.logger.debug("Fecthing for #{button.sp_id}: #{response.code}")
+      if response.code.to_i == 200
         body = JSON.parse(response.body)
 
         Rails.logger.debug("Fecthed for #{button.sp_id}: #{body['success']}")
